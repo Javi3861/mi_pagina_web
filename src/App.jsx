@@ -1,30 +1,25 @@
-import React, { useState } from "react";
-import { Products } from "./components/Products";
-import { products as initialProducts } from "./mocks/products.json";
+import { products as initialProducts } from './mocks/products.json'
+import { Products } from './components/Products.jsx'
+import { Header } from './components/Header.jsx'
+import { Footer } from './components/Footer.jsx'
+import { IS_DEVELOPMENT } from './config.js'
+import { useFilters } from './hooks/useFilters.js'
+import { Cart } from './components/Cart.jsx'
+import { CartProvider } from './context/cart.jsx'
 
-function App() {
-  const [products] = useState(initialProducts);
-  const [filters, setFilter] = useState({
-    category: "all",
-    minPrice: 0,
-  });
-  // ESTO ES PARA JUNIORS
-  const filterProducts = (products) => {
-    return products.filter((product) => {
-      return (
-        product.price >= filters.minPrice &&
-        (filters.category === "all" || product.category === filters.category)
-      );
-    });
-  };
+function App () {
+  const { filterProducts } = useFilters()
 
-  const filteredProducts = filterProducts(products);
+  const filteredProducts = filterProducts(initialProducts)
+
   return (
-    <div>
-      <h1>Shopping Card</h1>
+    <CartProvider>
+      <Header />
+      <Cart />
       <Products products={filteredProducts} />
-    </div>
-  );
+      {IS_DEVELOPMENT && <Footer />}
+    </CartProvider>
+  )
 }
 
-export default App;
+export default App
